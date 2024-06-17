@@ -8,30 +8,33 @@
     tools:context=".ui.home.HomeFragment">
 
     <EditText
+        android:inputType="text"
         android:id="@+id/et_game_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Nom de la partie"
+        android:hint="@string/nom_de_la_partie"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="16dp"/>
 
     <EditText
+        android:inputType="textPersonName"
         android:id="@+id/et_player_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Nom du joueur"
+        android:hint="@string/nom_du_joueur"
         app:layout_constraintTop_toBottomOf="@id/et_game_name"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="16dp"/>
 
     <EditText
+        android:inputType="textPersonName"
         android:id="@+id/et_game_master_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Nom du maître de jeu"
+        android:hint="@string/nom_du_ma_tre_de_jeu"
         app:layout_constraintTop_toBottomOf="@id/et_player_name"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -51,7 +54,7 @@
         android:id="@+id/btn_new_game"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Créer une nouvelle partie"
+        android:text="@string/cr_er_une_nouvelle_partie"
         app:layout_constraintTop_toBottomOf="@id/sp_difficulty"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
