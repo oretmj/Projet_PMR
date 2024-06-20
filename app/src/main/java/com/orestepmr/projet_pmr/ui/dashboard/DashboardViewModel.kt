@@ -3,8 +3,10 @@ package com.orestepmr.projet_pmr.ui.dashboard
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.room.Room.databaseBuilder
+import com.orestepmr.projet_pmr.data.AppDatabase
 import com.orestepmr.projet_pmr.models.Game
-
+import androidx.room.Room
 class DashboardViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
@@ -13,23 +15,4 @@ class DashboardViewModel : ViewModel() {
     val text: LiveData<String> = _text
 
 
-    fun dummyGetGamesList(): List<Game> {
-        // Call to the API to get the list of games
-
-        // for now we will return a dummy list
-        var counter = 0
-        return List(10) {
-            counter++
-            Game(
-                counter,
-                counter,
-                counter,
-                counter,
-                "Game Master $counter",
-                "Game $counter",
-                "2021-10-10",
-                1000
-            )
-        }
-    }
 }

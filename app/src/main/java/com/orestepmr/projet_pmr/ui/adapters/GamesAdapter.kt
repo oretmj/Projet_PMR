@@ -14,6 +14,8 @@ class GamesAdapter(private val partie_list: List<Game>) :
 
     class MyViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val textView: TextView = view.findViewById(R.id.nomPartie)
+        val textViewDate: TextView = view.findViewById(R.id.date)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -24,6 +26,8 @@ class GamesAdapter(private val partie_list: List<Game>) :
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.textView.text = partie_list[position].name
+        holder.textViewDate.text = partie_list[position].date
+
     }
 
     override fun getItemCount() = partie_list.size
