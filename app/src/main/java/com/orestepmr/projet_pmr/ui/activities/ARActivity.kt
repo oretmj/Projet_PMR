@@ -26,8 +26,8 @@ class ARActivity : AppCompatActivity() {
         setContentView(R.layout.activity_ar)
         arFragment = supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment
 
-        val modelUri = intent.getStringExtra("MODEL_URI")
-        val text = intent.getStringExtra("TEXT")
+        val modelUri = intent.getStringExtra("MODEL_URI") //On récupère depuis le QR code le modèle
+        val text = intent.getStringExtra("TEXT") //SI il y a un texte en plus on le récupère
         load3DModel(modelUri, text)
     }
 
@@ -38,11 +38,7 @@ class ARActivity : AppCompatActivity() {
         }
 
         val uri = Uri.parse("file:///android_asset/$modelUri")
-        ModelRenderable.builder()
-            .setSource(this, RenderableSource.builder().setSource(
-                this,
-                uri,
-                RenderableSource.SourceType.GLB
+        ModelRenderable.builder().setSource(this, RenderableSource.builder().setSource(this, uri, RenderableSource.SourceType.GLB
             ).build())
             .build()
             .thenAccept { renderable ->
