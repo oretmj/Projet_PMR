@@ -6,7 +6,10 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.ar.core.Anchor
@@ -27,6 +30,8 @@ class ScanActivity : CaptureActivity() {
     private val VOICE_RECOGNITION_REQUEST_CODE = 1234
     private lateinit var arSceneView: ArSceneView
     private lateinit var transformationSystem: TransformationSystem
+    private lateinit var timerTextView: TextView
+    private lateinit var countDownTimer: CountDownTimer
 
 
 
@@ -42,6 +47,10 @@ class ScanActivity : CaptureActivity() {
         } else {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), REQUEST_CAMERA)
         }
+
+        timerTextView = findViewById(R.id.timer_text_view)
+        startTimer(300000) // 5 minutes en millisecondes
+
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -61,11 +70,11 @@ class ScanActivity : CaptureActivity() {
         val selectionVisualizer = FootprintSelectionVisualizer()
         transformationSystem = TransformationSystem(resources.displayMetrics, selectionVisualizer)
 
-
-
         findViewById<Button>(R.id.btn_new_scan).setOnClickListener {
             startQRScanner()
         }
+        startTimer(300000) // 5 minutes en millisecondes
+
     }
     private fun startQRScanner() {
         // Configuration et lancement du scanner ZXing
@@ -92,6 +101,21 @@ class ScanActivity : CaptureActivity() {
                     .create()
                     .show()
             } else {
+              /*
+                // Display the result in a dialog or use the result in other ways
+//                AlertDialog.Builder(this)
+//                    .setTitle("Scan Result")
+//                    .setMessage("QR Code content:\n${result.contents}")
+//                    .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+//                    .create()
+//                    .show()
+                Toast.makeText(this, "Chargement du modèle : ${result.contents}", Toast.LENGTH_LONG).show()
+                val intent = Intent(this, ARActivity::class.java)
+                intent.putExtra("MODEL_URI", result.contents)
+                startActivity(intent)
+            }
+        }
+        */
 
                 // Display 3D object
                 display3DChest(result.contents)
@@ -103,36 +127,28 @@ class ScanActivity : CaptureActivity() {
     private fun display3DChest(contents: String) {
         //Gestion de la 3D pour afficher un coffre
 
-        val anchor = arSceneView.session?.createAnchor(arSceneView.arFrame?.camera?.pose)
-        if (anchor != null) {
-            placeObject(arSceneView, anchor)
-        }
+        val intent = Intent(this, ARActivity::class.java)
+        intent.putExtra("MODEL_URL", contents)
+        startActivity(intent)
 
         // Mettre un bouton invisible pour dire "ouvrir" avec la bibliothèque realwear
         //openChest(contents)
     }
 
-    private fun placeObject(arSceneView: ArSceneView, anchor: Anchor) {
-        MaterialFactory.makeOpaqueWithColor(this, com.google.ar.sceneform.rendering.Color(android.graphics.Color.WHITE))
-            .thenAccept { material ->
-                val modelRenderable = ShapeFactory.makeCube(Vector3(0.1f, 0.1f, 0.1f), Vector3.zero(), material)
-                val anchorNode = AnchorNode(anchor)
-                anchorNode.setParent(arSceneView.scene)
-                val node = TransformableNode(transformationSystem)
-                node.renderable = modelRenderable
-                node.setParent(anchorNode)
-                node.select()
+    private fun startTimer(timeInMillis: Long) {
+        countDownTimer = object : CountDownTimer(timeInMillis, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val minutes = (millisUntilFinished / 1000) / 60
+                val seconds = (millisUntilFinished / 1000) % 60
+                timerTextView.text = String.format("%02d:%02d", minutes, seconds)
             }
-    }
 
-    private fun openChest(contents: String) {
-        //Open the right enigma with the contents value of the QR code
-        AlertDialog.Builder(this)
-                    .setTitle("Scan Result")
-                    .setMessage("QR Code content:\n${contents}")
-                    .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
-                    .create()
-                    .show()
+            override fun onFinish() {
+                timerTextView.text = "Time's up!"
+                // Ajoutez ici ce que vous voulez faire lorsque le temps est écoulé
+            }
+        }
+        countDownTimer.start()
     }
 
 

@@ -35,8 +35,10 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        /*
         val intent = Intent(this, ScanActivity::class.java)
         startActivity(intent)
+         */
 
     }
 
