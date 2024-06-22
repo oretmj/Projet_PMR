@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.ar.core.Anchor
@@ -92,6 +93,21 @@ class ScanActivity : CaptureActivity() {
                     .create()
                     .show()
             } else {
+              /*
+                // Display the result in a dialog or use the result in other ways
+//                AlertDialog.Builder(this)
+//                    .setTitle("Scan Result")
+//                    .setMessage("QR Code content:\n${result.contents}")
+//                    .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+//                    .create()
+//                    .show()
+                Toast.makeText(this, "Chargement du modèle : ${result.contents}", Toast.LENGTH_LONG).show()
+                val intent = Intent(this, ARActivity::class.java)
+                intent.putExtra("MODEL_URI", result.contents)
+                startActivity(intent)
+            }
+        }
+        */
 
                 // Display 3D object
                 display3DChest(result.contents)
