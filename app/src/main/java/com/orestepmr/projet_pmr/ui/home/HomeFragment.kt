@@ -1,5 +1,6 @@
 package com.orestepmr.projet_pmr.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.orestepmr.projet_pmr.R
 import com.orestepmr.projet_pmr.databinding.FragmentHomeBinding
 import com.orestepmr.projet_pmr.models.Game
+import com.orestepmr.projet_pmr.ui.activities.ScanActivity
 import com.orestepmr.projet_pmr.ui.dashboard.DashboardViewModel
 import java.time.LocalDate
 import java.util.Date
@@ -54,6 +56,7 @@ class HomeFragment : Fragment() {
     private fun setView() {
         binding.btnNewGame.setOnClickListener {
             // Create new game and navigate to game
+            /*
             val name = binding.etGameName.text.toString()
             val playerName = binding.etPlayerName.text.toString()
             val gameMasterName = binding.etGameMasterName.text.toString()
@@ -62,6 +65,11 @@ class HomeFragment : Fragment() {
             var newGame = Game(0, 0, playerName, 0, gameMasterName, name, LocalDate.now().toString(), 0)
 
             dashboardViewModel.createNewGame(requireContext(), newGame)
+
+             */
+
+            val intent = Intent(requireContext(), ScanActivity::class.java)
+            startActivity(intent)
         }
 
         val spinner: Spinner = binding.spDifficulty
