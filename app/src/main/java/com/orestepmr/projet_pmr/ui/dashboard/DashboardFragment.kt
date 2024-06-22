@@ -33,6 +33,10 @@ class DashboardFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    //private var games : List<Game> = List
+
+    private lateinit var gamesAdapter: GamesAdapter
+
     private val dashboardViewModel: DashboardViewModel by viewModels()
 
     override fun onCreateView(
@@ -40,93 +44,35 @@ class DashboardFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val dashboardViewModel =
-            ViewModelProvider(this).get(DashboardViewModel::class.java)
-
-        val db = Room.databaseBuilder(
-            requireContext().applicationContext,
-            AppDatabase::class.java, "gameDB"
-        ).build()
-
-        //Create fake games and players for tests
-        //insertSampleData(db)
-
-        //Data recovery with coroutines
-        CoroutineScope(Dispatchers.Default).launch {
-            val gameEntities = db.gameDao().getAllGames()
-            // Convert GameEntity list to Game list
-            val listOfGames = gameEntities.map { Game(
-                        id = it.id,
-                        playerId = it.playerId,
-                        playerName = it.playerName,
-                        gameMasterId = it.gameMasterId,
-                        gameMasterName = it.gameMasterName,
-                        name = it.name,
-                        date = it.date,
-                        time = it.time
-                    )
-            }
-            //Update UI
-            withContext(Dispatchers.Main) {
-                setView(listOfGames)
-            }
-
-        }
-
-
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        /*
-        val textView: TextView = binding.textDashboard
-        dashboardViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        },
-         */
+        gamesAdapter = GamesAdapter(requireContext())
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.adapter = gamesAdapter
+
+        observeViewModel()
+
         return root
     }
 
-    private fun setView(game: List<Game>) {
-        val adapter: GamesAdapter = GamesAdapter(game)
-        binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        binding.recyclerView.adapter = adapter
+    private fun setView(games: List<Game>) {
+        gamesAdapter.replaceData(games)
+    }
+
+    private fun observeViewModel() {
+        dashboardViewModel.games.observe(viewLifecycleOwner) {
+            setView(it)
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-    fun insertSampleData(db: AppDatabase) {
-        CoroutineScope(Dispatchers.IO).launch {
-            // Create a list of fake players
-            val players = listOf(
-                PlayersEntity(0, "John Doe", 25),
-                PlayersEntity(0, "Jane Smith", 30),
-                PlayersEntity(0, "Alice Johnson", 28)
-            )
 
-            // Insert players into database
-            players.forEach {
-                db.gameDao().createUser(it)
-            }
-
-            // Create a list of fake games
-            val games = listOf(
-                GameEntity(0, 1, "John Doe", 1, "Jane Smith", "Explorers Guild", "2022-07-15", 90),
-                GameEntity(0, 2, "Jane Smith", 2, "John Doe", "Dragon Riders", "2022-07-16", 120),
-                GameEntity(0, 3, "Alice Johnson", 1, "John Doe", "Mystery Mansion", "2022-07-17", 110)
-            )
-
-            // Insert games into database
-            games.forEach {
-                db.gameDao().insertGame(it)
-            }
-
-            // Retrieve and log all games
-            val data = db.gameDao().getAllGames()
-
-            Log.i("room", "All the games: $data")
-
-        }
+    override fun onResume() {
+        super.onResume()
+        dashboardViewModel.getDataGames(requireContext())
     }
 }
