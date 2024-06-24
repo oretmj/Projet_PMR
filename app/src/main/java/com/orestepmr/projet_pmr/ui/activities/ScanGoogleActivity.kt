@@ -167,7 +167,7 @@ class ScanGoogleActivity : AppCompatActivity() {
             } else {
                 AlertDialog.Builder(this)
                     .setTitle(enigma.getString("title"))
-                    .setMessage(enigma.getString("description") + "\n\nTrouvez la clé pour déverrouiller l'énigme")
+                    .setMessage(enigma.getString("description") + "\n\nTrouvez ${clues.contains(enigma.getString("clueKey"))} pour déverrouiller l'énigme")
                     .setPositiveButton("Retour") { dialog, _ ->
                         cleanButtons()
                         startScanning()
