@@ -3,6 +3,7 @@ package com.orestepmr.projet_pmr.ui.activities
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.Toast
@@ -45,6 +46,31 @@ class ScanGoogleActivity : AppCompatActivity() {
         }
     }
 
+    private fun startCamera() {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        cameraProviderFuture.addListener({
+            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+            val preview = Preview.Builder()
+                .build()
+                .also {
+                    it.setSurfaceProvider(cameraPreview.surfaceProvider)
+                }
+
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+            try {
+                // Unbind use cases before rebinding
+                cameraProvider.unbindAll()
+
+                // Bind use cases to camera
+                cameraProvider.bindToLifecycle(this, cameraSelector, preview)
+            } catch(exc: Exception) {
+                Log.e("test", "Use case binding failed", exc)
+            }
+
+        }, ContextCompat.getMainExecutor(this))
+    }
+
     private fun startScanning() {
         val integrator = IntentIntegrator(this)
         integrator.setPrompt("Scan a barcode")
@@ -68,7 +94,7 @@ class ScanGoogleActivity : AppCompatActivity() {
 
     private fun setAnswerButtons(enigmaQr: String) {
         val file = this.assets.open("enigmas.json")
-        val json = JSONObject(file.reader().readText()).getJSONArray("enigmas")
+        val json = JSONObject(file.reader().readText()).getJSONArray("level1")
         enigma = JSONObject()
         for (i in 0 until json.length()) {
             enigma = json.getJSONObject(i)
@@ -96,6 +122,9 @@ class ScanGoogleActivity : AppCompatActivity() {
                     it.isClickable = false
                 }
                 buttons.add(button)
+
+                // add this to automatic click of buttons and complete the enigma
+                //button.callOnClick()
             }
             AlertDialog.Builder(this)
                 .setTitle(enigma.getString("title"))
@@ -112,10 +141,11 @@ class ScanGoogleActivity : AppCompatActivity() {
                 Toast.makeText(this, "Vous avez déjà la clé", Toast.LENGTH_LONG).show()
                 clues.add(enigma.getString("clue"))
                 checkLastClue()
+                startScanning()
             } else {
                 AlertDialog.Builder(this)
                     .setTitle(enigma.getString("title"))
-                    .setMessage(enigma.getString("description") + "\n\nTrouvez ${clues.contains(enigma.getString("clueKey"))} pour déverrouiller l'énigme")
+                    .setMessage(enigma.getString("description") + "\n\nTrouvez ${enigma.getString("clueKey")} pour déverrouiller l'énigme")
                     .setPositiveButton("Retour") { dialog, _ ->
                         cleanButtons()
                         startScanning()
@@ -124,6 +154,19 @@ class ScanGoogleActivity : AppCompatActivity() {
                     .create()
                     .show()
             }
+        } else {
+            AlertDialog.Builder(this)
+                .setTitle(enigma.getString("title"))
+                .setMessage(enigma.getString("description"))
+                .setPositiveButton("Retour") { dialog, _ ->
+                    cleanButtons()
+                    startScanning()
+                    dialog.dismiss()
+                }
+                .create()
+                .show()
+            clues.add(enigma.getString("clue"))
+            checkLastClue()
         }
     }
 
