@@ -20,6 +20,7 @@ import com.orestepmr.projet_pmr.databinding.FragmentHomeBinding
 import com.orestepmr.projet_pmr.models.Game
 import com.orestepmr.projet_pmr.ui.activities.MainARActivity
 import com.orestepmr.projet_pmr.ui.activities.ScanActivity
+import com.orestepmr.projet_pmr.ui.activities.ScanGoogleActivity
 import com.orestepmr.projet_pmr.ui.dashboard.DashboardViewModel
 import org.json.JSONArray
 import org.json.JSONObject
@@ -77,7 +78,7 @@ class HomeFragment : Fragment() {
 
              */
 
-            val intent = Intent(requireContext(), ScanActivity::class.java)
+            val intent = Intent(requireContext(), ScanGoogleActivity::class.java)
             startActivity(intent)
         }
 
