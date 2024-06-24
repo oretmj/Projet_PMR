@@ -31,6 +31,9 @@
             android:name=".ui.activities.ScanActivity"
             android:exported="true"/>
         <activity
+            android:name=".ui.activities.ScanGoogleActivity"
+            android:exported="true"/>
+        <activity
             android:name=".ui.activities.MainActivity"
             android:exported="true"
             android:label="@string/app_name">
