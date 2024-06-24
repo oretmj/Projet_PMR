@@ -32,6 +32,8 @@ class ScanGoogleActivity : AppCompatActivity() {
     private var buttons = mutableListOf<Button>()
     private var enigma = JSONObject()
 
+    private var clues = mutableListOf<String>()
+
     companion object {
         private const val REQUEST_CAMERA = 1
     }
@@ -134,32 +136,49 @@ class ScanGoogleActivity : AppCompatActivity() {
                     if (answersNeeded == 0) {
                         //setAnswerButtons()
                         Toast.makeText(this, "Enigme résolue", Toast.LENGTH_LONG).show()
+                        clues.add(enigma.getString("clue"))
+                        checkLastClue()
                         cleanButtons()
                     }
                     it.isClickable = false
                 }
                 buttons.add(button)
 
+                // auto click du button pour tester
+                //button.callOnClick()
+
                 Log.i("Answer", "button created with answer: ${answers[i]}")
             }
-        }
-        // scan again
-        //startQRScanner()
-
-        if (!buttons.isEmpty()) {
-            // wait a second
             AlertDialog.Builder(this)
                 .setTitle(enigma.getString("title"))
                 .setMessage(enigma.getString("description"))
-                .setPositiveButton("OK") { dialog, _ ->
-                    //cleanButtons()
+                .setPositiveButton("Retour") { dialog, _ ->
+                    cleanButtons()
                     startScanning()
                     dialog.dismiss()
                 }
                 .create()
                 .show()
+        } else if (enigma.getBoolean("needsClue")) {
+            if (clues.contains(enigma.getString("clueKey"))) {
+                Toast.makeText(this, "Vous avez déjà la clé", Toast.LENGTH_LONG).show()
+                clues.add(enigma.getString("clue"))
+                checkLastClue()
+            } else {
+                AlertDialog.Builder(this)
+                    .setTitle(enigma.getString("title"))
+                    .setMessage(enigma.getString("description") + "\n\nTrouvez la clé pour déverrouiller l'énigme")
+                    .setPositiveButton("Retour") { dialog, _ ->
+                        cleanButtons()
+                        startScanning()
+                        dialog.dismiss()
+                    }
+                    .create()
+                    .show()
+            }
         }
-
+        // scan again
+        //startQRScanner()
     }
 
 
@@ -167,8 +186,22 @@ class ScanGoogleActivity : AppCompatActivity() {
         val layout = findViewById<FrameLayout>(R.id.layout_view)
         buttons.forEach {
             it.isClickable = false
-            layout.removeView(it)
+            //layout.removeView(it)
         }
         buttons.clear()
+    }
+
+    private fun checkLastClue() {
+        if (clues.last() == "--FIN--") {
+            AlertDialog.Builder(this)
+                .setTitle("Félicitations")
+                .setMessage("Vous avez résolu toutes les énigmes")
+                .setPositiveButton("OK") { dialog, _ ->
+                    dialog.dismiss()
+                    finish()
+                }
+                .create()
+                .show()
+        }
     }
 }

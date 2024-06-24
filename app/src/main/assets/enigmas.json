@@ -15,19 +15,19 @@
     {
       "id": 2,
       "title": "Coffre",
-      "type": "chest",
+      "type": "chest1",
       "description": "Coffre that needs a key to open it",
       "hasClue": true,
       "needsClue": true,
       "clueKey": "clue1",
       "needsAnswer": false,
-      "clue": "This is the second clue",
+      "clue": "--FIN--",
       "answer": ""
     },
     {
       "id": 3,
       "title": "Coffre",
-      "type": "chest",
+      "type": "chest2",
       "description": "Coffre that needs an answer to open it",
       "hasClue": true,
       "needsClue": false,
@@ -69,7 +69,7 @@
       "needsClue": false,
       "clueKey": "",
       "needsAnswer": true,
-      "clue": "This is the third clue",
+      "clue": "clue1",
       "answer": "Réponse"
     },
     {
