@@ -6,29 +6,25 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
-import android.widget.TextView
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.ar.core.Anchor
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.ArSceneView
-import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.MaterialFactory
 import com.google.ar.sceneform.rendering.ShapeFactory
-import com.google.ar.sceneform.rendering.ViewRenderable
-import com.google.ar.sceneform.ux.ArFragment
 import com.google.zxing.integration.android.IntentIntegrator
 import com.journeyapps.barcodescanner.CaptureActivity
 import com.orestepmr.projet_pmr.R
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
-import kotlin.random.Random
-import com.google.ar.sceneform.assets.RenderableSource
-import com.google.ar.sceneform.rendering.ModelRenderable
+import org.json.JSONObject
 
 class ScanActivity : CaptureActivity() {
 
@@ -36,14 +32,17 @@ class ScanActivity : CaptureActivity() {
     private lateinit var arSceneView: ArSceneView
     private lateinit var transformationSystem: TransformationSystem
 
+
+    private var answersNeeded: Int = 0
+    private var buttons = mutableListOf<Button>()
+    private var enigma = JSONObject()
+
     companion object {
         private const val REQUEST_CAMERA = 1
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
-
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
             == PackageManager.PERMISSION_GRANTED) {
             setupScanner()
@@ -64,6 +63,7 @@ class ScanActivity : CaptureActivity() {
         setContentView(R.layout.activity_scan)
 
 
+        //AR
         arSceneView = findViewById(R.id.ar_scene_view)
         val selectionVisualizer = FootprintSelectionVisualizer()
         transformationSystem = TransformationSystem(resources.displayMetrics, selectionVisualizer)
@@ -83,6 +83,9 @@ class ScanActivity : CaptureActivity() {
         integrator.setBeepEnabled(false)
         integrator.setBarcodeImageEnabled(true)
         integrator.initiateScan()
+
+
+
     }
 
     // Handling the scan result
@@ -116,97 +119,137 @@ class ScanActivity : CaptureActivity() {
         */
 
                 // Display 3D object
-               devinetteEnigme()
+                //display3DChest(result.contents)
+                Toast.makeText(this, "Chargement du modèle : ${result.contents}", Toast.LENGTH_LONG).show()
+                setAnswerButtons(result.contents)
 
             }
         }
     }
 
-//    private fun display3DChest(contents: String) {
-//        //Gestion de la 3D pour afficher un coffre
-//
-//        val anchor = arSceneView.session?.createAnchor(arSceneView.arFrame?.camera?.pose)
-//        if (anchor != null) {
-//            placeObject(arSceneView, anchor)
-//        }
-//
-//        // Mettre un bouton invisible pour dire "ouvrir" avec la bibliothèque realwear
-//        //openChest(contents)
-//    }
-//
-//    private fun placeObject(arSceneView: ArSceneView, anchor: Anchor) {
-//        MaterialFactory.makeOpaqueWithColor(this, com.google.ar.sceneform.rendering.Color(android.graphics.Color.WHITE))
-//            .thenAccept { material ->
-//                val modelRenderable = ShapeFactory.makeCube(Vector3(0.1f, 0.1f, 0.1f), Vector3.zero(), material)
-//                val anchorNode = AnchorNode(anchor)
-//                anchorNode.setParent(arSceneView.scene)
-//                val node = TransformableNode(transformationSystem)
-//                node.renderable = modelRenderable
-//                node.setParent(anchorNode)
-//                node.select()
-//            }
-//    }
-//
-//    private fun openChest(contents: String) {
-//        //Open the right enigma with the contents value of the QR code
-//        AlertDialog.Builder(this)
-//                    .setTitle("Scan Result")
-//                    .setMessage("QR Code content:\n${contents}")
-//                    .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
-//                    .create()
-//                    .show()
-//    }
+    private fun display3DChest(contents: String) {
+        //Gestion de la 3D pour afficher un coffre
 
-    private fun addTextNode(text: String?) {
-        ViewRenderable.builder()
-            .setView(this, R.layout.view_renderable_text)
-            .build()
-            .thenAccept { viewRenderable ->
-                viewRenderable.view.findViewById<TextView>(R.id.textView).text = text
+        val anchor = arSceneView.session?.createAnchor(arSceneView.arFrame?.camera?.pose)
+        if (anchor != null) {
+            placeObject(arSceneView, anchor)
+        }
 
-                val textNode = Node().apply {
-                    renderable = viewRenderable
-                    setParent(arSceneView.scene)
-                    localPosition = Vector3(0f, 1f, 0f) //Position du texte
+        // Mettre un bouton invisible pour dire "ouvrir" avec la bibliothèque realwear
+        //openChest(contents)
+    }
+
+    private fun placeObject(arSceneView: ArSceneView, anchor: Anchor) {
+        MaterialFactory.makeOpaqueWithColor(this, com.google.ar.sceneform.rendering.Color(android.graphics.Color.WHITE))
+            .thenAccept { material ->
+                val modelRenderable = ShapeFactory.makeCube(Vector3(0.1f, 0.1f, 0.1f), Vector3.zero(), material)
+                val anchorNode = AnchorNode(anchor)
+                anchorNode.setParent(arSceneView.scene)
+                val node = TransformableNode(transformationSystem)
+                node.renderable = modelRenderable
+                node.setParent(anchorNode)
+                node.select()
+            }
+    }
+
+    private fun openChest(contents: String) {
+        //Open the right enigma with the contents value of the QR code
+        AlertDialog.Builder(this)
+                    .setTitle("Scan Result")
+                    .setMessage("QR Code content:\n${contents}")
+                    .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+                    .create()
+                    .show()
+    }
+
+    private fun showEnigmaDialog() {
+        if (!buttons.isEmpty()) {
+            // wait a second
+            AlertDialog.Builder(this)
+                .setTitle(enigma.getString("title"))
+                .setMessage(enigma.getString("description"))
+                .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+                .create()
+                .show()
+        }
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        //setAnswerButtons()
+    }
+
+
+    private fun setAnswerButtons(enigmaQr: String) {
+        val file = this.assets.open("enigmas.json")
+        // read all enigmas and save them in a list
+        val json = JSONObject(file.reader().readText()).getJSONArray("enigmas")
+
+        // get a random enigma
+        //val enigma = json.getJSONObject((0 until json.length()).random())
+
+        // get enigma with type enigmaQr
+        enigma = JSONObject()
+        for (i in 0 until json.length()) {
+            enigma = json.getJSONObject(i)
+            if (enigma.getString("type") == enigmaQr) {
+                break
+            }
+        }
+
+        //val layout = findViewById<FrameLayout>(R.id.layout_view)
+        cleanButtons()
+
+        Log.d("Enigma", enigma.toString())
+        if (enigma.getBoolean("needsAnswer")) {
+            val answers = enigma.getString("answer").toString().split(",")
+            answersNeeded = answers.size
+            for (i in 0 until answers.size) {
+                val button = Button(this)
+                button.text = answers[i]
+                button.setOnClickListener {
+                    Log.d("Answer", button.text.toString())
+                    answersNeeded--
+                    if (answersNeeded == 0) {
+                        //setAnswerButtons()
+                        Toast.makeText(this, "Enigme résolue", Toast.LENGTH_LONG).show()
+                        cleanButtons()
+                    }
+                    it.isClickable = false
                 }
-                arSceneView.scene.addChild(textNode)
+                buttons.add(button)
+
+                Log.i("Answer", "button created with answer: ${answers[i]}")
             }
-    }
-
-    private fun calculEnigme(): Int {
-
-        val operateurs = listOf("+", "-", "*")
-
-        // Generate random operands and operator
-        val nombre1 = Random.nextInt(1, 100)
-        val nombre2 = Random.nextInt(1, 100)
-        val operator = operateurs[Random.nextInt(operateurs.size)]
-
-        // Create the calculation string
-        val (calcul,resultat) = when (operator) {
-            "+" -> "$nombre1 + $nombre2" to (nombre1 + nombre2)
-            "-" -> "$nombre1 - $nombre2" to (nombre1 - nombre2)
-            "*" -> "$nombre1 * $nombre2" to (nombre1 * nombre2)
-            else -> "" to 0
         }
-        addTextNode(calcul)
-        return resultat
+        // scan again
+        //startQRScanner()
+
+        if (!buttons.isEmpty()) {
+            // wait a second
+            AlertDialog.Builder(this)
+                .setTitle(enigma.getString("title"))
+                .setMessage(enigma.getString("description"))
+                .setPositiveButton("OK") { dialog, _ ->
+                    cleanButtons()
+                    startQRScanner()
+                    dialog.dismiss()
+                }
+                .create()
+                .show()
+        }
+
     }
 
-    data class Devinette(val question: String, val reponse: String)
-
-    private fun devinetteEnigme(): String {
-
-        val listeDevinettes = listOf(
-            Devinette("Devinette 1", "Reponse 1"),
-            Devinette("Devinette 2", "Reponse 2"),
-            Devinette("Devinette 3", "Reponse 3"),
-            Devinette("Devinette 4", "Reponse 4"),
-            Devinette("Devinette 5", "Reponse 5")
-        )
-        val random = Random.nextInt(listeDevinettes.size)
-        val devinetteChoix = listeDevinettes[random]
-        addTextNode(devinetteChoix.question)
-        return devinetteChoix.reponse
+    private fun cleanButtons() {
+        val layout = findViewById<FrameLayout>(R.id.layout_view)
+        buttons.forEach {
+            it.isClickable = false
+            layout.removeView(it)
+        }
+        buttons.clear()
     }
+
+
 }

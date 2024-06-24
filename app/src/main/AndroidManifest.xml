@@ -8,6 +8,8 @@
         android:name="android.hardware.camera.ar"
         android:required="true" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <!--<uses-feature android:name="android.hardware.camera.ar" />-->
     <!--<uses-feature android:name="android.hardware.camera" android:required="true" />-->
 
@@ -23,6 +25,12 @@
         tools:targetApi="31">
         <activity
             android:name=".ui.activities.ARActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.MainARActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.activities.ScanGoogleActivity"
             android:exported="false" />
         <meta-data
             android:name="com.google.ar.core"
