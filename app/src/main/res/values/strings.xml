@@ -4,4 +4,7 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="Scan_QR">Scan</string>
+
+    <string name="big_lamp">Big Lamp</string>
+    <string name="small_table">small table</string>
 </resources>

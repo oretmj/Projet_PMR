@@ -6,7 +6,9 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -22,6 +24,7 @@ import com.orestepmr.projet_pmr.R
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
+import org.json.JSONObject
 
 class ScanActivity : CaptureActivity() {
 
@@ -30,6 +33,9 @@ class ScanActivity : CaptureActivity() {
     private lateinit var transformationSystem: TransformationSystem
 
 
+    private var answersNeeded: Int = 0
+    private var buttons = mutableListOf<Button>()
+    private var enigma = JSONObject()
 
     companion object {
         private const val REQUEST_CAMERA = 1
@@ -77,6 +83,9 @@ class ScanActivity : CaptureActivity() {
         integrator.setBeepEnabled(false)
         integrator.setBarcodeImageEnabled(true)
         integrator.initiateScan()
+
+
+
     }
 
     // Handling the scan result
@@ -110,7 +119,9 @@ class ScanActivity : CaptureActivity() {
         */
 
                 // Display 3D object
-                display3DChest(result.contents)
+                //display3DChest(result.contents)
+                Toast.makeText(this, "Chargement du modèle : ${result.contents}", Toast.LENGTH_LONG).show()
+                setAnswerButtons(result.contents)
 
             }
         }
@@ -149,6 +160,95 @@ class ScanActivity : CaptureActivity() {
                     .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
                     .create()
                     .show()
+    }
+
+    private fun showEnigmaDialog() {
+        if (!buttons.isEmpty()) {
+            // wait a second
+            AlertDialog.Builder(this)
+                .setTitle(enigma.getString("title"))
+                .setMessage(enigma.getString("description"))
+                .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+                .create()
+                .show()
+        }
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        //setAnswerButtons()
+    }
+
+
+    private fun setAnswerButtons(enigmaQr: String) {
+        val file = this.assets.open("enigmas.json")
+        // read all enigmas and save them in a list
+        val json = JSONObject(file.reader().readText()).getJSONArray("enigmas")
+
+        // get a random enigma
+        //val enigma = json.getJSONObject((0 until json.length()).random())
+
+        // get enigma with type enigmaQr
+        enigma = JSONObject()
+        for (i in 0 until json.length()) {
+            enigma = json.getJSONObject(i)
+            if (enigma.getString("type") == enigmaQr) {
+                break
+            }
+        }
+
+        //val layout = findViewById<FrameLayout>(R.id.layout_view)
+        cleanButtons()
+
+        Log.d("Enigma", enigma.toString())
+        if (enigma.getBoolean("needsAnswer")) {
+            val answers = enigma.getString("answer").toString().split(",")
+            answersNeeded = answers.size
+            for (i in 0 until answers.size) {
+                val button = Button(this)
+                button.text = answers[i]
+                button.setOnClickListener {
+                    Log.d("Answer", button.text.toString())
+                    answersNeeded--
+                    if (answersNeeded == 0) {
+                        //setAnswerButtons()
+                        Toast.makeText(this, "Enigme résolue", Toast.LENGTH_LONG).show()
+                        cleanButtons()
+                    }
+                    it.isClickable = false
+                }
+                buttons.add(button)
+
+                Log.i("Answer", "button created with answer: ${answers[i]}")
+            }
+        }
+        // scan again
+        //startQRScanner()
+
+        if (!buttons.isEmpty()) {
+            // wait a second
+            AlertDialog.Builder(this)
+                .setTitle(enigma.getString("title"))
+                .setMessage(enigma.getString("description"))
+                .setPositiveButton("OK") { dialog, _ ->
+                    cleanButtons()
+                    startQRScanner()
+                    dialog.dismiss()
+                }
+                .create()
+                .show()
+        }
+
+    }
+
+    private fun cleanButtons() {
+        val layout = findViewById<FrameLayout>(R.id.layout_view)
+        buttons.forEach {
+            it.isClickable = false
+            layout.removeView(it)
+        }
+        buttons.clear()
     }
 
 

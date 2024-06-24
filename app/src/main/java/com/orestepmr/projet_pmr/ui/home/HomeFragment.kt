@@ -2,10 +2,13 @@ package com.orestepmr.projet_pmr.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.JsonReader
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -15,8 +18,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.orestepmr.projet_pmr.R
 import com.orestepmr.projet_pmr.databinding.FragmentHomeBinding
 import com.orestepmr.projet_pmr.models.Game
+import com.orestepmr.projet_pmr.ui.activities.MainARActivity
 import com.orestepmr.projet_pmr.ui.activities.ScanActivity
 import com.orestepmr.projet_pmr.ui.dashboard.DashboardViewModel
+import org.json.JSONArray
+import org.json.JSONObject
+import org.json.JSONString
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.time.LocalDate
 import java.util.Date
 

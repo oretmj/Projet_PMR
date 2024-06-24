@@ -1,0 +1,100 @@
+{
+  "enigmas": [
+    {
+      "id": 1,
+      "title": "Cadena",
+      "type": "lock",
+      "description": "This is a 4 digit cadena enigma",
+      "hasClue": true,
+      "needsClue": true,
+      "clueKey": "clue1",
+      "needsAnswer": false,
+      "clue": "This is the first clue",
+      "answer": "1975"
+    },
+    {
+      "id": 2,
+      "title": "Coffre",
+      "type": "chest",
+      "description": "Coffre that needs a key to open it",
+      "hasClue": true,
+      "needsClue": true,
+      "clueKey": "clue1",
+      "needsAnswer": false,
+      "clue": "This is the second clue",
+      "answer": ""
+    },
+    {
+      "id": 3,
+      "title": "Coffre",
+      "type": "chest",
+      "description": "Coffre that needs an answer to open it",
+      "hasClue": true,
+      "needsClue": false,
+      "clueKey": "",
+      "needsAnswer": true,
+      "clue": "This is the second clue",
+      "answer": "Rouge"
+    },
+    {
+      "id": 4,
+      "title": "Color Memory",
+      "type": "memory",
+      "description": "Remember and repeat the color sequence",
+      "hasClue": true,
+      "needsClue": false,
+      "clueKey": "",
+      "needsAnswer": true,
+      "clue": "This is the third clue",
+      "answer": "Rouge,Vert,Bleu"
+    },
+    {
+      "id": 5,
+      "title": "Calcul mental",
+      "type": "calculation",
+      "description": "Solve the mental calculation",
+      "hasClue": true,
+      "needsClue": false,
+      "clueKey": "",
+      "needsAnswer": true,
+      "clue": "This is the third clue",
+      "answer": ""
+    },
+    {
+      "id": 6,
+      "title": "Devinettes",
+      "type": "riddle",
+      "description": "Answer the riddle",
+      "hasClue": true,
+      "needsClue": false,
+      "clueKey": "",
+      "needsAnswer": true,
+      "clue": "This is the third clue",
+      "answer": "Réponse"
+    },
+    {
+      "id": 7,
+      "title": "Mots cachés",
+      "type": "wordsearch",
+      "description": "Find the hidden words",
+      "hasClue": true,
+      "needsClue": false,
+      "clueKey": "",
+      "needsAnswer": true,
+      "clue": "This is the third clue",
+      "answer": "Réponse,Solution,Enigme"
+    },
+    {
+      "id": 8,
+      "title": "Cri Mystérieux",
+      "type": "sound",
+      "description": "Listen to the sound and find the answer",
+      "hasClue": true,
+      "needsClue": false,
+      "clueKey": "",
+      "needsAnswer": true,
+      "clue": "This is the third clue",
+      "answer": "Loup"
+    }
+  ]
+}
