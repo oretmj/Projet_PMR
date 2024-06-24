@@ -96,5 +96,55 @@
       "clue": "This is the third clue",
       "answer": "Loup"
     }
+  ],
+  "level1": [
+    {
+      "id": 1,
+      "title": "Coffre abandonné",
+      "type": "chest1",
+      "description": "Tu viens de trouver un coffre. Il te faut quelque chose pour l'ouvrir !",
+      "hasClue": false,
+      "needsClue": true,
+      "clueKey": "clé",
+      "needsAnswer": false,
+      "clue": "This is the first clue",
+      "answer": "Pour continuer, trouvez la créature qui garde ce lieu avec son cri distinctif."
+    },
+    {
+      "id": 2,
+      "title": "Un vieux marteau",
+      "type": "clue1",
+      "description": "Il va peut être nous servir pour la suite de l'aventure.",
+      "hasClue": true,
+      "needsClue": false,
+      "clueKey": "marteau",
+      "needsAnswer": false,
+      "clue": "This is the first clue",
+      "answer": "1975"
+    },
+    {
+      "id": 3,
+      "title": "Cri Mystérieux",
+      "type": "sound",
+      "description": "On dirait qu'un animal se cache derrière ce buisson. Essaies de deviner l'animal à l'aide de son cri !",
+      "hasClue": true,
+      "needsClue": false,
+      "clueKey": "",
+      "needsAnswer": true,
+      "clue": "This is the third clue",
+      "answer": "Loup"
+    },
+    {
+      "id": 4,
+      "title": "Devinettes",
+      "type": "riddle",
+      "description": "Je suis petite et grande le soir ? Qui suis je ?",
+      "hasClue": true,
+      "needsClue": false,
+      "clueKey": "",
+      "needsAnswer": true,
+      "clue": "",
+      "answer": "Réponse"
+    }
   ]
 }
