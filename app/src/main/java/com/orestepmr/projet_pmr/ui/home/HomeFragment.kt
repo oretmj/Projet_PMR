@@ -19,6 +19,7 @@ import com.orestepmr.projet_pmr.R
 import com.orestepmr.projet_pmr.databinding.FragmentHomeBinding
 import com.orestepmr.projet_pmr.models.Game
 import com.orestepmr.projet_pmr.ui.activities.MainARActivity
+import com.orestepmr.projet_pmr.ui.activities.PDFActivity
 import com.orestepmr.projet_pmr.ui.activities.ScanActivity
 import com.orestepmr.projet_pmr.ui.activities.ScanGoogleActivity
 import com.orestepmr.projet_pmr.ui.dashboard.DashboardViewModel
@@ -78,7 +79,13 @@ class HomeFragment : Fragment() {
 
              */
 
-            val intent = Intent(requireContext(), ScanGoogleActivity::class.java)
+//            val intent = Intent(requireContext(), ScanGoogleActivity::class.java)
+//            startActivity(intent)
+
+            //Pour aller sur PDF Activity
+            val difficulty = binding.spDifficulty.selectedItem.toString()
+            val intent = Intent(requireContext(), PDFActivity::class.java)
+            intent.putExtra("difficulty",difficulty)
             startActivity(intent)
         }
 
