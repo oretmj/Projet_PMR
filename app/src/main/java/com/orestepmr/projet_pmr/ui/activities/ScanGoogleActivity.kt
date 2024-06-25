@@ -102,11 +102,20 @@ class ScanGoogleActivity : AppCompatActivity() {
         val level : String = bundle?.getString("level").toString() //On récupère le niveau
         val json = JSONObject(file.reader().readText()).getJSONArray(level)  //Baptiste : J'ai modifié là du coup
         enigma = JSONObject()
+
+        var founded = false
         for (i in 0 until json.length()) {
             enigma = json.getJSONObject(i)
             if (enigma.getString("type") == enigmaQr) {
+                founded = true
                 break
             }
+        }
+
+        if (!founded) {
+            Toast.makeText(this, "Code QR incorrect", Toast.LENGTH_LONG).show()
+            startScanning()
+            return
         }
 
         cleanButtons()
@@ -132,100 +141,17 @@ class ScanGoogleActivity : AppCompatActivity() {
                 // add this to automatic click of buttons and complete the enigma
                 //button.callOnClick()
             }
-            val type = enigma.getString("type")
-            val imageResId = when (type) {
-                "chest1" -> R.drawable.chest1
-                "clue1" -> R.drawable.clue1
-                "sound" -> R.drawable.sound
-                "riddle" -> R.drawable.riddle
-                else -> R.drawable.default_image_level1 // Une image par défaut si le type n'est pas reconnu
-            }
-
-            val builder = AlertDialog.Builder(this)
-            val inflater = this.layoutInflater
-            val dialogView = inflater.inflate(R.layout.dialog_custom, null) // Assurez-vous de créer un layout XML pour cela
-            val imageView = dialogView.findViewById<ImageView>(R.id.dialog_image)
-            val titleView = dialogView.findViewById<TextView>(R.id.dialog_title)
-            val messageView = dialogView.findViewById<TextView>(R.id.dialog_message)
-
-            imageView.setImageResource(imageResId)
-            titleView.text = enigma.getString("title")
-            messageView.text = enigma.getString("description")
-
-
-            builder.setView(dialogView)
-            builder.setPositiveButton("Ok") { dialog, _ ->
-                cleanButtons()
-                startScanning()
-                dialog.dismiss()
-            }
-
-            builder.create().show()
+            createDialog()
         } else if (enigma.getBoolean("needsClue")) {
             if (clues.contains(enigma.getString("clueKey"))) {
-                Toast.makeText(this, "Vous avez déjà la clé", Toast.LENGTH_LONG).show()
+                createDialog(true)
                 clues.add(enigma.getString("clue"))
                 checkLastClue()
-                startScanning()
             } else {
-                val type = enigma.getString("type")
-                val imageResId = when (type) {
-                    "chest1" -> R.drawable.chest1
-                    "clue1" -> R.drawable.clue1
-                    "sound" -> R.drawable.sound
-                    "riddle" -> R.drawable.riddle
-                    else -> R.drawable.default_image_level1 // Une image par défaut si le type n'est pas reconnu
-                }
-
-                val builder = AlertDialog.Builder(this)
-                val inflater = this.layoutInflater
-                val dialogView = inflater.inflate(R.layout.dialog_custom, null) // Assurez-vous de créer un layout XML pour cela
-                val imageView = dialogView.findViewById<ImageView>(R.id.dialog_image)
-                val titleView = dialogView.findViewById<TextView>(R.id.dialog_title)
-                val messageView = dialogView.findViewById<TextView>(R.id.dialog_message)
-
-                imageView.setImageResource(imageResId)
-                titleView.text = enigma.getString("title")
-                messageView.text = enigma.getString("description")
-
-                builder.setView(dialogView)
-                builder.setPositiveButton("Ok") { dialog, _ ->
-                    cleanButtons()
-                    startScanning()
-                    dialog.dismiss()
-                }
-
-                builder.create().show()
+                createDialog()
             }
         } else {
-            val type = enigma.getString("type")
-            val imageResId = when (type) {
-                "chest1" -> R.drawable.chest1
-                "clue1" -> R.drawable.clue1
-                "sound" -> R.drawable.sound
-                "riddle" -> R.drawable.riddle
-                else -> R.drawable.default_image_level1 // Une image par défaut si le type n'est pas reconnu
-            }
-
-            val builder = AlertDialog.Builder(this)
-            val inflater = this.layoutInflater
-            val dialogView = inflater.inflate(R.layout.dialog_custom, null) // Assurez-vous de créer un layout XML pour cela
-            val imageView = dialogView.findViewById<ImageView>(R.id.dialog_image)
-            val titleView = dialogView.findViewById<TextView>(R.id.dialog_title)
-            val messageView = dialogView.findViewById<TextView>(R.id.dialog_message)
-
-            imageView.setImageResource(imageResId)
-            titleView.text = enigma.getString("title")
-            messageView.text = enigma.getString("description")
-
-            builder.setView(dialogView)
-            builder.setPositiveButton("Ok") { dialog, _ ->
-                cleanButtons()
-                startScanning()
-                dialog.dismiss()
-            }
-
-            builder.create().show()
+            createDialog()
 
             // Ajout d'une énigme aux indices et vérification du dernier indice
             clues.add(enigma.getString("clue"))
@@ -253,6 +179,42 @@ class ScanGoogleActivity : AppCompatActivity() {
                 .create()
                 .show()
         }
+    }
+
+    private fun createDialog(completed : Boolean = false) {
+        val type = enigma.getString("type")
+        val imageResId = when (type) {
+            "chest1" -> R.drawable.chest1
+            "clue1" -> R.drawable.clue1
+            "sound" -> R.drawable.sound
+            "riddle" -> R.drawable.riddle
+            else -> R.drawable.default_image_level1 // Une image par défaut si le type n'est pas reconnu
+        }
+
+        val builder = AlertDialog.Builder(this)
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.dialog_custom, null) // Assurez-vous de créer un layout XML pour cela
+        val imageView = dialogView.findViewById<ImageView>(R.id.dialog_image)
+        val titleView = dialogView.findViewById<TextView>(R.id.dialog_title)
+        val messageView = dialogView.findViewById<TextView>(R.id.dialog_message)
+
+        imageView.setImageResource(imageResId)
+        if (completed) {
+            titleView.text = "Félicitations"
+            messageView.text = "Vous avez ouvert le coffre !"
+        } else {
+            titleView.text = enigma.getString("title")
+            messageView.text = enigma.getString("description")
+        }
+
+        builder.setView(dialogView)
+        builder.setPositiveButton("Ok") { dialog, _ ->
+            cleanButtons()
+            startScanning()
+            dialog.dismiss()
+        }
+
+        builder.create().show()
     }
 }
 
