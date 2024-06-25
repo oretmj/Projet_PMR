@@ -33,6 +33,7 @@ class ScanGoogleActivity : AppCompatActivity() {
         private const val REQUEST_CAMERA = 1
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scan_google)
@@ -46,6 +47,7 @@ class ScanGoogleActivity : AppCompatActivity() {
                 ScanGoogleActivity.REQUEST_CAMERA
             )
         }
+
     }
 
     private fun startCamera() {
@@ -96,7 +98,9 @@ class ScanGoogleActivity : AppCompatActivity() {
 
     private fun setAnswerButtons(enigmaQr: String) {
         val file = this.assets.open("enigmas.json")
-        val json = JSONObject(file.reader().readText()).getJSONArray("level1")
+        val bundle = this.getIntent().getExtras()
+        val level : String = bundle?.getString("level").toString() //On récupère le niveau
+        val json = JSONObject(file.reader().readText()).getJSONArray(level)  //Baptiste : J'ai modifié là du coup
         enigma = JSONObject()
         for (i in 0 until json.length()) {
             enigma = json.getJSONObject(i)
