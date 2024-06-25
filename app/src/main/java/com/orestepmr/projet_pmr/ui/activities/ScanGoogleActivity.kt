@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -126,16 +128,34 @@ class ScanGoogleActivity : AppCompatActivity() {
                 // add this to automatic click of buttons and complete the enigma
                 //button.callOnClick()
             }
-            AlertDialog.Builder(this)
-                .setTitle(enigma.getString("title"))
-                .setMessage(enigma.getString("description"))
-                .setPositiveButton("Retour") { dialog, _ ->
-                    cleanButtons()
-                    startScanning()
-                    dialog.dismiss()
-                }
-                .create()
-                .show()
+            val type = enigma.getString("type")
+            val imageResId = when (type) {
+                "chest1" -> R.drawable.chest1
+                "clue1" -> R.drawable.clue1
+                "sound" -> R.drawable.sound
+                "riddle" -> R.drawable.riddle
+                else -> R.drawable.default_image_level1 // Une image par défaut si le type n'est pas reconnu
+            }
+
+            val builder = AlertDialog.Builder(this)
+            val inflater = this.layoutInflater
+            val dialogView = inflater.inflate(R.layout.dialog_custom, null) // Assurez-vous de créer un layout XML pour cela
+            val imageView = dialogView.findViewById<ImageView>(R.id.dialog_image)
+            val titleView = dialogView.findViewById<TextView>(R.id.dialog_title)
+            val messageView = dialogView.findViewById<TextView>(R.id.dialog_message)
+
+            imageView.setImageResource(imageResId)
+            titleView.text = enigma.getString("title")
+            messageView.text = enigma.getString("description")
+
+            builder.setView(dialogView)
+            builder.setPositiveButton("Ok") { dialog, _ ->
+                cleanButtons()
+                startScanning()
+                dialog.dismiss()
+            }
+
+            builder.create().show()
         } else if (enigma.getBoolean("needsClue")) {
             if (clues.contains(enigma.getString("clueKey"))) {
                 Toast.makeText(this, "Vous avez déjà la clé", Toast.LENGTH_LONG).show()
@@ -143,28 +163,66 @@ class ScanGoogleActivity : AppCompatActivity() {
                 checkLastClue()
                 startScanning()
             } else {
-                AlertDialog.Builder(this)
-                    .setTitle(enigma.getString("title"))
-                    .setMessage(enigma.getString("description") + "\n\nTrouvez ${enigma.getString("clueKey")} pour déverrouiller l'énigme")
-                    .setPositiveButton("Retour") { dialog, _ ->
-                        cleanButtons()
-                        startScanning()
-                        dialog.dismiss()
-                    }
-                    .create()
-                    .show()
-            }
-        } else {
-            AlertDialog.Builder(this)
-                .setTitle(enigma.getString("title"))
-                .setMessage(enigma.getString("description"))
-                .setPositiveButton("Retour") { dialog, _ ->
+                val type = enigma.getString("type")
+                val imageResId = when (type) {
+                    "chest1" -> R.drawable.chest1
+                    "clue1" -> R.drawable.clue1
+                    "sound" -> R.drawable.sound
+                    "riddle" -> R.drawable.riddle
+                    else -> R.drawable.default_image_level1 // Une image par défaut si le type n'est pas reconnu
+                }
+
+                val builder = AlertDialog.Builder(this)
+                val inflater = this.layoutInflater
+                val dialogView = inflater.inflate(R.layout.dialog_custom, null) // Assurez-vous de créer un layout XML pour cela
+                val imageView = dialogView.findViewById<ImageView>(R.id.dialog_image)
+                val titleView = dialogView.findViewById<TextView>(R.id.dialog_title)
+                val messageView = dialogView.findViewById<TextView>(R.id.dialog_message)
+
+                imageView.setImageResource(imageResId)
+                titleView.text = enigma.getString("title")
+                messageView.text = enigma.getString("description")
+
+                builder.setView(dialogView)
+                builder.setPositiveButton("Ok") { dialog, _ ->
                     cleanButtons()
                     startScanning()
                     dialog.dismiss()
                 }
-                .create()
-                .show()
+
+                builder.create().show()
+            }
+        } else {
+            val type = enigma.getString("type")
+            val imageResId = when (type) {
+                "chest1" -> R.drawable.chest1
+                "clue1" -> R.drawable.clue1
+                "sound" -> R.drawable.sound
+                "riddle" -> R.drawable.riddle
+                else -> R.drawable.default_image_level1 // Une image par défaut si le type n'est pas reconnu
+            }
+
+            val builder = AlertDialog.Builder(this)
+            val inflater = this.layoutInflater
+            val dialogView = inflater.inflate(R.layout.dialog_custom, null) // Assurez-vous de créer un layout XML pour cela
+            val imageView = dialogView.findViewById<ImageView>(R.id.dialog_image)
+            val titleView = dialogView.findViewById<TextView>(R.id.dialog_title)
+            val messageView = dialogView.findViewById<TextView>(R.id.dialog_message)
+
+            imageView.setImageResource(imageResId)
+            titleView.text = enigma.getString("title")
+            messageView.text = enigma.getString("description")
+
+            builder.setView(dialogView)
+            builder.setPositiveButton("Ok") { dialog, _ ->
+                cleanButtons()
+                startScanning()
+                dialog.dismiss()
+            }
+
+            builder.create().show()
+
+            // Ajout d'une énigme aux indices et vérification du dernier indice
             clues.add(enigma.getString("clue"))
             checkLastClue()
         }

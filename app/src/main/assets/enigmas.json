@@ -96,7 +96,7 @@
       "type": "chest1",
       "description": "Tu viens de trouver un coffre. Il te faut quelque chose pour l'ouvrir !",
       "needsClue": true,
-      "clueKey": "loup",
+      "clueKey": "marteau",
       "needsAnswer": false,
       "clue": "This is the first clue",
       "answer": "Pour continuer, trouvez la créature qui garde ce lieu avec son cri distinctif."
