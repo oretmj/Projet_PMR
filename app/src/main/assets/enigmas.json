@@ -98,8 +98,9 @@
       "needsClue": true,
       "clueKey": "marteau",
       "needsAnswer": false,
-      "clue": "This is the first clue",
-      "answer": "Pour continuer, trouvez la créature qui garde ce lieu avec son cri distinctif."
+      "clue": "coffre",
+      "answer": "Pour continuer, trouvez la créature qui garde ce lieu avec son cri distinctif.",
+      "image" : "chest1.png"
     },
     {
       "id": 2,
@@ -110,29 +111,82 @@
       "clueKey": "",
       "needsAnswer": false,
       "clue": "marteau",
-      "answer": ""
+      "answer": "",
+      "image" : "clue1.png"
     },
     {
       "id": 3,
       "title": "Cri Mystérieux",
       "type": "sound",
       "description": "On dirait qu'un animal se cache derrière ce buisson. Essaies de deviner l'animal à l'aide de son cri !",
-      "needsClue": false,
-      "clueKey": "",
+      "needsClue": true,
+      "clueKey": "coffre",
       "needsAnswer": true,
       "clue": "loup",
-      "answer": "Loup"
+      "answer": "Loup",
+      "image" : "sound.png"
     },
     {
       "id": 4,
       "title": "Devinettes",
       "type": "riddle",
       "description": "Je suis petite et grande le soir ? Qui suis je ?",
-      "needsClue": false,
-      "clueKey": "--FIN--",
+      "needsClue": true,
+      "clueKey": "loup",
       "needsAnswer": true,
-      "clue": "",
-      "answer": "Réponse"
+      "clue": "--FIN--",
+      "answer": "Réponse",
+      "image" : "riddle.png"
+    }
+  ],
+  "level2": [
+    {
+      "id": 1,
+      "title": "Cadenas de la Chambre Froide",
+      "type": "lock",
+      "description": "Vous êtes enfermés dans la chambre froide, dépéchez vous à trouver le code avant de mourir de froid",
+      "needsClue": false,
+      "clueKey": "",
+      "needsAnswer": true,
+      "clue": "Sortir de le chambre froide",
+      "answer": "3,6,4",
+      "image" : "cadenas_chambre_froide.png"
+    },
+    {
+      "id": 2,
+      "title": "Calculs Macabres",
+      "type": "math",
+      "description": "Oh des poulets déplumés. Il y en a six, combien cela fait d'ailes ?",
+      "needsClue": true,
+      "clueKey": "Sortir de le chambre froide",
+      "needsAnswer": true,
+      "clue": "poulets",
+      "answer": "12",
+      "image" : "calculs_macabres.png"
+    },
+    {
+      "id": 3,
+      "title": "Color Memory des Couteaux Ensanglantés",
+      "type": "memory",
+      "description": "a definir",
+      "needsClue": true,
+      "clueKey": "poulets",
+      "needsAnswer": true,
+      "clue": "couteaux",
+      "answer": "bleu, rouge, vert, vert, rouge, rouge",
+      "image" : "couteaux_sang.png"
+    },
+    {
+      "id": 4,
+      "title": "Cri Mystérieux de la Dernière Victime",
+      "type": "sound",
+      "description": "Le boucher fou se rapproche de vous, quel est l'animal derrière la porte qui pourrez vous aider ?",
+      "needsClue": true,
+      "clueKey": "couteaux",
+      "needsAnswer": true,
+      "clue": "--FIN--",
+      "answer": "cochon",
+      "image" : "cri_cochon.png"
     }
   ]
 }

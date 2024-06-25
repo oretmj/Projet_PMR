@@ -148,6 +148,7 @@ class ScanGoogleActivity : AppCompatActivity() {
             titleView.text = enigma.getString("title")
             messageView.text = enigma.getString("description")
 
+
             builder.setView(dialogView)
             builder.setPositiveButton("Ok") { dialog, _ ->
                 cleanButtons()
