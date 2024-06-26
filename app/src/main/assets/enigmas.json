@@ -100,7 +100,9 @@
       "needsAnswer": false,
       "clue": "coffre",
       "answer": "Pour continuer, trouvez la créature qui garde ce lieu avec son cri distinctif.",
-      "image" : "chest1.png"
+      "image" : "chest1.png",
+      "completedTitle" : "Vous frappez fort avec le marteau, le coffre s'ouvre",
+      "completed" : "Vous obtenez une encyclopédie magique. Pour continuer, vous devriez essayer de trouver où se cache la créature qui cri"
     },
     {
       "id": 2,
@@ -112,7 +114,9 @@
       "needsAnswer": false,
       "clue": "marteau",
       "answer": "",
-      "image" : "clue1.png"
+      "image" : "clue1.png",
+      "completedTitle" : "Un vrai marteau !",
+      "completed" : "Ce marteau demande un peu de force..."
     },
     {
       "id": 3,
@@ -124,7 +128,9 @@
       "needsAnswer": true,
       "clue": "loup",
       "answer": "Loup",
-      "image" : "sound.png"
+      "image" : "sound.png",
+      "completedTitle" : "HOOUUUUUU",
+      "completed" : "Effectivement c'était bien un loup, il a l'air appeuré, vous décidez de le suivre."
     },
     {
       "id": 4,
@@ -136,7 +142,9 @@
       "needsAnswer": true,
       "clue": "--FIN--",
       "answer": "Réponse",
-      "image" : "riddle.png"
+      "image" : "riddle.png",
+      "completedTitle" : "Et oui ! c'était bien une ombre !",
+      "completed" : "Méfiez vous des ombres des arbres dans cette forêt..."
     }
   ],
   "level2": [
