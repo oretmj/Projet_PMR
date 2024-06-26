@@ -1,12 +1,9 @@
-package com.orestepmr.projet_pmr.ui.dashboard
+package com.orestepmr.projet_pmr.ui.viewmodels
 
-import android.app.Activity
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.room.Room.databaseBuilder
 import com.orestepmr.projet_pmr.data.AppDatabase
 import com.orestepmr.projet_pmr.models.Game
 import androidx.room.Room
@@ -16,7 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class DashboardViewModel : ViewModel() {
+class GamesViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is dashboard Fragment"
