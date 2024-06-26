@@ -200,8 +200,8 @@ class ScanGoogleActivity : AppCompatActivity() {
 
         imageView.setImageResource(imageResId)
         if (completed) {
-            titleView.text = "Félicitations"
-            messageView.text = "Vous avez ouvert le coffre !"
+            titleView.text = enigma.getString("completedTitle")
+            messageView.text = enigma.getString("completed")
         } else {
             titleView.text = enigma.getString("title")
             messageView.text = enigma.getString("description")
