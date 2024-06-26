@@ -61,15 +61,12 @@ class PDFActivity : AppCompatActivity() {
 
         button_down.setOnClickListener {
             telechargePDF("$level.pdf")
-            button_partie.isEnabled = true
-
         }
 
         button_partie.setOnClickListener { //Demarrage de la partie
             val intent = Intent(this, ScanGoogleActivity::class.java)
             intent.putExtra("level",level)
             startActivity(intent)
-            button_partie.isEnabled = false
         }
 
     }
@@ -89,22 +86,22 @@ class PDFActivity : AppCompatActivity() {
                 }
             }
             Toast.makeText(this,"PDF téléchargé vers : ${outFile.absolutePath}",Toast.LENGTH_SHORT).show()
-            openPDF(outFile)
+//            openPDF(outFile)
         } catch (e: IOException) {
             Toast.makeText(this,"Erreur : $e",Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun openPDF(pdf: File) {
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(Uri.parse(pdf.toString()), DocumentsContract.Document.MIME_TYPE_DIR)
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivity(intent)
-        } else {
-            Log.e("MainActivity", "No file explorer found")
-            Toast.makeText(this,"Erreur impossible d'ouvrir l'explorateur de fichiers",Toast.LENGTH_SHORT).show()
-        }
-    }
+//    private fun openPDF(pdf: File) {
+//        val intent = Intent(Intent.ACTION_VIEW).apply {
+//            setDataAndType(Uri.parse(pdf.toString()), DocumentsContract.Document.MIME_TYPE_DIR)
+//            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//        }
+//        if (intent.resolveActivity(packageManager) != null) {
+//            startActivity(intent)
+//        } else {
+//            Log.e("MainActivity", "No file explorer found")
+//            Toast.makeText(this,"Erreur impossible d'ouvrir l'explorateur de fichiers",Toast.LENGTH_SHORT).show()
+//        }
+//    }
 }
