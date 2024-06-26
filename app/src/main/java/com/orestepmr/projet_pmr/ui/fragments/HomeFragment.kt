@@ -1,4 +1,4 @@
-package com.orestepmr.projet_pmr.ui.home
+package com.orestepmr.projet_pmr.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import com.orestepmr.projet_pmr.R
 import com.orestepmr.projet_pmr.databinding.FragmentHomeBinding
 import com.orestepmr.projet_pmr.ui.activities.PDFActivity

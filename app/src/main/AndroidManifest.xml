@@ -27,22 +27,11 @@
             android:name=".ui.activities.PDFActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.ARActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activities.MainARActivity"
-            android:exported="true" />
-        <activity
             android:name=".ui.activities.ScanGoogleActivity"
             android:exported="false" />
-
         <meta-data
             android:name="com.google.ar.core"
             android:value="required" />
-
-        <activity
-            android:name=".ui.activities.ScanActivity"
-            android:exported="true" />
         <activity
             android:name=".ui.activities.MainActivity"
             android:exported="true"

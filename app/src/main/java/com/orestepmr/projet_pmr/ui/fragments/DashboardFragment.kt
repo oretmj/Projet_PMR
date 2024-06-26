@@ -1,4 +1,4 @@
-package com.orestepmr.projet_pmr.ui.dashboard
+package com.orestepmr.projet_pmr.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
