@@ -27,7 +27,7 @@
             android:name=".ui.activities.PDFActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.ScanGoogleActivity"
+            android:name=".ui.activities.ScanActivity"
             android:exported="false" />
         <meta-data
             android:name="com.google.ar.core"

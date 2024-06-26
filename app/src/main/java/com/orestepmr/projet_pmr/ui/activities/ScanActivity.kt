@@ -21,7 +21,7 @@ import org.json.JSONObject
 import com.orestepmr.projet_pmr.R
 
 
-class ScanGoogleActivity : AppCompatActivity() {
+class ScanActivity : AppCompatActivity() {
 
     private lateinit var cameraPreview: PreviewView
     private var answersNeeded: Int = 0
@@ -44,7 +44,7 @@ class ScanGoogleActivity : AppCompatActivity() {
             startScanning()
         } else {
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.CAMERA),
-                ScanGoogleActivity.REQUEST_CAMERA
+                ScanActivity.REQUEST_CAMERA
             )
         }
 
