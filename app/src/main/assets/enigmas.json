@@ -137,11 +137,11 @@
       "title": "Devinettes",
       "type": "riddle",
       "description": "Je suis petite et grande le soir ? Qui suis je ?",
-      "needsClue": true,
+      "needsClue": false,
       "clueKey": "loup",
       "needsAnswer": true,
       "clue": "--FIN--",
-      "answer": "Réponse",
+      "answer": "Ombre",
       "image" : "riddle.png",
       "completedTitle" : "Et oui ! c'était bien une ombre !",
       "completed" : "Méfiez vous des ombres des arbres dans cette forêt..."

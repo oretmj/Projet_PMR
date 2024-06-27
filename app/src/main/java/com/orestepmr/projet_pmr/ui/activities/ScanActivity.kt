@@ -178,6 +178,8 @@ class ScanActivity : AppCompatActivity() {
                 }
                 .create()
                 .show()
+        } else {
+            startScanning()
         }
     }
 
@@ -197,6 +199,11 @@ class ScanActivity : AppCompatActivity() {
         val imageView = dialogView.findViewById<ImageView>(R.id.dialog_image)
         val titleView = dialogView.findViewById<TextView>(R.id.dialog_title)
         val messageView = dialogView.findViewById<TextView>(R.id.dialog_message)
+        val inputView = dialogView.findViewById<TextView>(R.id.dialog_edit_text)
+
+        if (enigma.getBoolean("needsClue")) {
+            inputView.visibility = TextView.GONE
+        }
 
         imageView.setImageResource(imageResId)
         if (completed) {
@@ -209,8 +216,18 @@ class ScanActivity : AppCompatActivity() {
 
         builder.setView(dialogView)
         builder.setPositiveButton("Ok") { dialog, _ ->
+            if (enigma.getBoolean("needsAnswer")) {
+                val answer = inputView.text.toString()
+                if (answer == enigma.getString("answer")) {
+                    Toast.makeText(this, "Enigme résolue", Toast.LENGTH_LONG).show()
+                    clues.add(enigma.getString("clue"))
+                    checkLastClue()
+                } else {
+                    Toast.makeText(this, "Mauvaise réponse", Toast.LENGTH_LONG).show()
+                    startScanning()
+                }
+            }
             cleanButtons()
-            startScanning()
             dialog.dismiss()
         }
 
