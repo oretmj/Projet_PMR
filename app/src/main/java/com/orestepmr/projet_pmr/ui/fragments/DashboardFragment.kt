@@ -1,29 +1,16 @@
-package com.orestepmr.projet_pmr.ui.dashboard
+package com.orestepmr.projet_pmr.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Spinner
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.map
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.room.Room
-import com.orestepmr.projet_pmr.data.AppDatabase
 import com.orestepmr.projet_pmr.databinding.FragmentDashboardBinding
 import com.orestepmr.projet_pmr.models.Game
-import com.orestepmr.projet_pmr.models.GameEntity
-import com.orestepmr.projet_pmr.models.PlayersEntity
 import com.orestepmr.projet_pmr.ui.adapters.GamesAdapter
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.orestepmr.projet_pmr.ui.viewmodels.GamesViewModel
 
 class DashboardFragment : Fragment() {
 
@@ -37,7 +24,7 @@ class DashboardFragment : Fragment() {
 
     private lateinit var gamesAdapter: GamesAdapter
 
-    private val dashboardViewModel: DashboardViewModel by viewModels()
+    private val dashboardViewModel: GamesViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

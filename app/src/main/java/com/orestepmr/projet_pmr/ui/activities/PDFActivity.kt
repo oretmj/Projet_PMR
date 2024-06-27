@@ -64,7 +64,7 @@ class PDFActivity : AppCompatActivity() {
         }
 
         button_partie.setOnClickListener { //Demarrage de la partie
-            val intent = Intent(this, ScanGoogleActivity::class.java)
+            val intent = Intent(this, ScanActivity::class.java)
             intent.putExtra("level",level)
             startActivity(intent)
         }

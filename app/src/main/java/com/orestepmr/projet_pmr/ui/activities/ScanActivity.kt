@@ -1,255 +1,220 @@
 package com.orestepmr.projet_pmr.ui.activities
 
-import android.Manifest
-import android.app.AlertDialog
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.*
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.ar.core.Anchor
-import com.google.ar.sceneform.AnchorNode
-import com.google.ar.sceneform.ArSceneView
-import com.google.ar.sceneform.math.Vector3
-import com.google.ar.sceneform.rendering.MaterialFactory
-import com.google.ar.sceneform.rendering.ShapeFactory
 import com.google.zxing.integration.android.IntentIntegrator
-import com.journeyapps.barcodescanner.CaptureActivity
-import com.orestepmr.projet_pmr.R
-import com.google.ar.sceneform.ux.TransformationSystem
-import com.google.ar.sceneform.ux.TransformableNode
-import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import org.json.JSONObject
-
-class ScanActivity : CaptureActivity() {
-
-    private val VOICE_RECOGNITION_REQUEST_CODE = 1234
-    private lateinit var arSceneView: ArSceneView
-    private lateinit var transformationSystem: TransformationSystem
+import com.orestepmr.projet_pmr.R
 
 
+class ScanActivity : AppCompatActivity() {
+
+    private lateinit var cameraPreview: PreviewView
     private var answersNeeded: Int = 0
     private var buttons = mutableListOf<Button>()
     private var enigma = JSONObject()
+    private var clues = mutableListOf<String>()
 
     companion object {
         private const val REQUEST_CAMERA = 1
     }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+        setContentView(R.layout.activity_scan_google)
+        cameraPreview = findViewById(R.id.camera_preview)
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
             == PackageManager.PERMISSION_GRANTED) {
-            setupScanner()
+            startScanning()
         } else {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), REQUEST_CAMERA)
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.CAMERA),
+                ScanActivity.REQUEST_CAMERA
+            )
         }
+
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (requestCode == REQUEST_CAMERA && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            setupScanner()
-        } else {
-            // Gérer le cas où la permission n'est pas accordée
-        }
+    private fun startCamera() {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        cameraProviderFuture.addListener({
+            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+            val preview = Preview.Builder()
+                .build()
+                .also {
+                    it.setSurfaceProvider(cameraPreview.surfaceProvider)
+                }
+
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+            try {
+                // Unbind use cases before rebinding
+                cameraProvider.unbindAll()
+
+                // Bind use cases to camera
+                cameraProvider.bindToLifecycle(this, cameraSelector, preview)
+            } catch(exc: Exception) {
+                Log.e("test", "Use case binding failed", exc)
+            }
+
+        }, ContextCompat.getMainExecutor(this))
     }
 
-    private fun setupScanner() {
-        setContentView(R.layout.activity_scan)
-
-
-        //AR
-        arSceneView = findViewById(R.id.ar_scene_view)
-        val selectionVisualizer = FootprintSelectionVisualizer()
-        transformationSystem = TransformationSystem(resources.displayMetrics, selectionVisualizer)
-
-
-
-        findViewById<Button>(R.id.btn_new_scan).setOnClickListener {
-            startQRScanner()
-        }
-    }
-    private fun startQRScanner() {
-        // Configuration et lancement du scanner ZXing
+    private fun startScanning() {
         val integrator = IntentIntegrator(this)
-        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
-        integrator.setPrompt("Scan a QR code")
-        integrator.setCameraId(0)  // 0 pour la caméra arrière
-        integrator.setBeepEnabled(false)
-        integrator.setBarcodeImageEnabled(true)
+        integrator.setPrompt("Scan a barcode")
+        integrator.setOrientationLocked(false)
         integrator.initiateScan()
-
-
-
     }
 
-    // Handling the scan result
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         if (result != null) {
             if (result.contents == null) {
-                // Handle case where no QR code was found
-                AlertDialog.Builder(this)
-                    .setTitle("Scanning Cancelled")
-                    .setMessage("No QR Code captured, the scanner was closed.")
-                    .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
-                    .create()
-                    .show()
+                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show()
             } else {
-              /*
-                // Display the result in a dialog or use the result in other ways
-//                AlertDialog.Builder(this)
-//                    .setTitle("Scan Result")
-//                    .setMessage("QR Code content:\n${result.contents}")
-//                    .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
-//                    .create()
-//                    .show()
-                Toast.makeText(this, "Chargement du modèle : ${result.contents}", Toast.LENGTH_LONG).show()
-                val intent = Intent(this, ARActivity::class.java)
-                intent.putExtra("MODEL_URI", result.contents)
-                startActivity(intent)
-            }
-        }
-        */
-
-                // Display 3D object
-                //display3DChest(result.contents)
-                Toast.makeText(this, "Chargement du modèle : ${result.contents}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Scanned: " + result.contents, Toast.LENGTH_LONG).show()
                 setAnswerButtons(result.contents)
-
             }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
         }
     }
-
-    private fun display3DChest(contents: String) {
-        //Gestion de la 3D pour afficher un coffre
-
-        val anchor = arSceneView.session?.createAnchor(arSceneView.arFrame?.camera?.pose)
-        if (anchor != null) {
-            placeObject(arSceneView, anchor)
-        }
-
-        // Mettre un bouton invisible pour dire "ouvrir" avec la bibliothèque realwear
-        //openChest(contents)
-    }
-
-    private fun placeObject(arSceneView: ArSceneView, anchor: Anchor) {
-        MaterialFactory.makeOpaqueWithColor(this, com.google.ar.sceneform.rendering.Color(android.graphics.Color.WHITE))
-            .thenAccept { material ->
-                val modelRenderable = ShapeFactory.makeCube(Vector3(0.1f, 0.1f, 0.1f), Vector3.zero(), material)
-                val anchorNode = AnchorNode(anchor)
-                anchorNode.setParent(arSceneView.scene)
-                val node = TransformableNode(transformationSystem)
-                node.renderable = modelRenderable
-                node.setParent(anchorNode)
-                node.select()
-            }
-    }
-
-    private fun openChest(contents: String) {
-        //Open the right enigma with the contents value of the QR code
-        AlertDialog.Builder(this)
-                    .setTitle("Scan Result")
-                    .setMessage("QR Code content:\n${contents}")
-                    .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
-                    .create()
-                    .show()
-    }
-
-    private fun showEnigmaDialog() {
-        if (!buttons.isEmpty()) {
-            // wait a second
-            AlertDialog.Builder(this)
-                .setTitle(enigma.getString("title"))
-                .setMessage(enigma.getString("description"))
-                .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
-                .create()
-                .show()
-        }
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-        //setAnswerButtons()
-    }
-
 
     private fun setAnswerButtons(enigmaQr: String) {
         val file = this.assets.open("enigmas.json")
-        // read all enigmas and save them in a list
-        val json = JSONObject(file.reader().readText()).getJSONArray("enigmas")
-
-        // get a random enigma
-        //val enigma = json.getJSONObject((0 until json.length()).random())
-
-        // get enigma with type enigmaQr
+        val bundle = this.getIntent().getExtras()
+        val level : String = bundle?.getString("level").toString() //On récupère le niveau
+        val json = JSONObject(file.reader().readText()).getJSONArray(level)  //Baptiste : J'ai modifié là du coup
         enigma = JSONObject()
+
+        var founded = false
         for (i in 0 until json.length()) {
             enigma = json.getJSONObject(i)
             if (enigma.getString("type") == enigmaQr) {
+                founded = true
                 break
             }
         }
 
-        //val layout = findViewById<FrameLayout>(R.id.layout_view)
+        if (!founded) {
+            Toast.makeText(this, "Code QR incorrect", Toast.LENGTH_LONG).show()
+            startScanning()
+            return
+        }
+
         cleanButtons()
 
-        Log.d("Enigma", enigma.toString())
         if (enigma.getBoolean("needsAnswer")) {
             val answers = enigma.getString("answer").toString().split(",")
             answersNeeded = answers.size
-            for (i in 0 until answers.size) {
+            for (i in answers.indices) {
                 val button = Button(this)
                 button.text = answers[i]
                 button.setOnClickListener {
-                    Log.d("Answer", button.text.toString())
                     answersNeeded--
                     if (answersNeeded == 0) {
-                        //setAnswerButtons()
                         Toast.makeText(this, "Enigme résolue", Toast.LENGTH_LONG).show()
+                        clues.add(enigma.getString("clue"))
+                        checkLastClue()
                         cleanButtons()
                     }
                     it.isClickable = false
                 }
                 buttons.add(button)
 
-                Log.i("Answer", "button created with answer: ${answers[i]}")
+                // add this to automatic click of buttons and complete the enigma
+                //button.callOnClick()
             }
-        }
-        // scan again
-        //startQRScanner()
+            createDialog()
+        } else if (enigma.getBoolean("needsClue")) {
+            if (clues.contains(enigma.getString("clueKey"))) {
+                createDialog(true)
+                clues.add(enigma.getString("clue"))
+                checkLastClue()
+            } else {
+                createDialog()
+            }
+        } else {
+            createDialog()
 
-        if (!buttons.isEmpty()) {
-            // wait a second
-            AlertDialog.Builder(this)
-                .setTitle(enigma.getString("title"))
-                .setMessage(enigma.getString("description"))
-                .setPositiveButton("OK") { dialog, _ ->
-                    cleanButtons()
-                    startQRScanner()
-                    dialog.dismiss()
-                }
-                .create()
-                .show()
+            // Ajout d'une énigme aux indices et vérification du dernier indice
+            clues.add(enigma.getString("clue"))
+            checkLastClue()
         }
-
     }
 
     private fun cleanButtons() {
         val layout = findViewById<FrameLayout>(R.id.layout_view)
         buttons.forEach {
             it.isClickable = false
-            layout.removeView(it)
         }
         buttons.clear()
     }
 
+    private fun checkLastClue() {
+        if (clues.last() == "--FIN--") {
+            AlertDialog.Builder(this)
+                .setTitle("Félicitations")
+                .setMessage("Vous avez résolu toutes les énigmes")
+                .setPositiveButton("OK") { dialog, _ ->
+                    dialog.dismiss()
+                    finish()
+                }
+                .create()
+                .show()
+        }
+    }
 
+    private fun createDialog(completed : Boolean = false) {
+        val type = enigma.getString("type")
+        val imageResId = when (type) {
+            "chest1" -> R.drawable.chest1
+            "clue1" -> R.drawable.clue1
+            "sound" -> R.drawable.sound
+            "riddle" -> R.drawable.riddle
+            else -> R.drawable.default_image_level1 // Une image par défaut si le type n'est pas reconnu
+        }
+
+        val builder = AlertDialog.Builder(this)
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.dialog_custom, null) // Assurez-vous de créer un layout XML pour cela
+        val imageView = dialogView.findViewById<ImageView>(R.id.dialog_image)
+        val titleView = dialogView.findViewById<TextView>(R.id.dialog_title)
+        val messageView = dialogView.findViewById<TextView>(R.id.dialog_message)
+
+        imageView.setImageResource(imageResId)
+        if (completed) {
+            titleView.text = enigma.getString("completedTitle")
+            messageView.text = enigma.getString("completed")
+        } else {
+            titleView.text = enigma.getString("title")
+            messageView.text = enigma.getString("description")
+        }
+
+        builder.setView(dialogView)
+        builder.setPositiveButton("Ok") { dialog, _ ->
+            cleanButtons()
+            startScanning()
+            dialog.dismiss()
+        }
+
+        builder.create().show()
+    }
 }
+
